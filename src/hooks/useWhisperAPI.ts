@@ -1,100 +1,103 @@
-import { useState, useRef } from 'react';
-import { Audio } from 'expo-av';
-import Constants from 'expo-constants';
+import { Audio } from "expo-av";
+import * as SecureStore from "expo-secure-store";
+import { useRef, useState } from "react";
 
 const useWhisperAPI = () => {
-  const [isFetching, setIsFetching] = useState(false);
-  const [transcript, setTranscript] = useState('');
-  const recordingRef = useRef<Audio.Recording | null>(null);
+	const [isFetching, setIsFetching] = useState(false);
+	const [transcript, setTranscript] = useState("");
+	const recordingRef = useRef<Audio.Recording | null>(null);
 
-  const startRecording = async () => {
-    try {
-      console.log('Requesting audio permissions...');
-      await Audio.requestPermissionsAsync();
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: true,
-        playsInSilentModeIOS: true,
-      });
+	const startRecording = async () => {
+		try {
+			await Audio.requestPermissionsAsync();
+			await Audio.setAudioModeAsync({
+				allowsRecordingIOS: true,
+				playsInSilentModeIOS: true,
+			});
 
-      console.log('Creating new recording...');
-      const { recording } = await Audio.Recording.createAsync(
-        Audio.RecordingOptionsPresets.HIGH_QUALITY
-      );
+			const { recording } = await Audio.Recording.createAsync(
+				Audio.RecordingOptionsPresets.HIGH_QUALITY,
+			);
 
-      recordingRef.current = recording;
+			recordingRef.current = recording;
 
-      setIsFetching(true);
-      setTranscript('');
+			setIsFetching(true);
+			setTranscript("");
 
-      console.log('Starting recording...');
-      await recording.startAsync();
-      console.log('Recording started');
-    } catch (error) {
-      console.error('Failed to start recording', error);
-    }
-  };
+			await recording.startAsync();
+		} catch (error) {
+			console.error("Failed to start recording", error);
+		}
+	};
 
-  const stopRecording = async () => {
-    try {
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: false,
-      });
+	const stopRecording = async () => {
+		try {
+			await Audio.setAudioModeAsync({
+				allowsRecordingIOS: false,
+			});
 
-      if (recordingRef.current) {
-        console.log('Stopping recording...');
-        await recordingRef.current.stopAndUnloadAsync();
-        console.log('Recording stopped');
+			if (recordingRef.current) {
+				await recordingRef.current.stopAndUnloadAsync();
 
-        const uri = recordingRef.current.getURI();
-        console.log('Recording URI:', uri);
+				const uri = recordingRef.current.getURI();
 
-        const formData = new FormData();
-        formData.append('file', {
-          uri,
-          type: 'audio/mp4',
-          name: 'audio.m4a',
-        } as unknown as Blob);
-        formData.append('model', 'whisper-1');
+				const apiKey = await SecureStore.getItemAsync("whisperApiKey");
 
-        console.log('Sending audio to Whisper API...');
-        const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${Constants.expoConfig?.extra?.whisperApiKey}`,
-            'Content-Type': 'multipart/form-data',
-          },
-          body: formData,
-        });
+				if (!apiKey) {
+					console.error("API key not found");
+					setIsFetching(false);
+					return "";
+				}
 
-        console.log('Whisper API response:', response);
+				const formData = new FormData();
+				formData.append("file", {
+					uri,
+					type: "audio/mp4",
+					name: "audio.m4a",
+				} as unknown as Blob);
+				formData.append("model", "whisper-1");
 
-        if (response.ok) {
-          const data = await response.json();
-          console.log('Whisper API response data:', data);
-          setTranscript(data.text);
-          setIsFetching(false);
-          return data.text;
-        } else {
-          const errorData = await response.json();
-          console.error('Whisper API request failed:', response.status, response.statusText);
-          console.error('Error details:', errorData);
-          setIsFetching(false);
-          return '';
-        }
-      }
-    } catch (error) {
-      console.error('Failed to stop recording', error);
-      setIsFetching(false);
-      return '';
-    }
-  };
+				const response = await fetch(
+					"https://api.openai.com/v1/audio/transcriptions",
+					{
+						method: "POST",
+						headers: {
+							Authorization: `Bearer ${apiKey}`,
+							"Content-Type": "multipart/form-data",
+						},
+						body: formData,
+					},
+				);
 
-  return {
-    isFetching,
-    transcript,
-    startRecording,
-    stopRecording,
-  };
+				if (response.ok) {
+					const data = await response.json();
+					setTranscript(data.text);
+					setIsFetching(false);
+					return data.text;
+				}
+
+				const errorData = await response.json();
+				console.error(
+					"Whisper API request failed:",
+					response.status,
+					response.statusText,
+				);
+				setIsFetching(false);
+				return "";
+			}
+		} catch (error) {
+			console.error("Failed to stop recording", error);
+			setIsFetching(false);
+			return "";
+		}
+	};
+
+	return {
+		isFetching,
+		transcript,
+		startRecording,
+		stopRecording,
+	};
 };
 
 export default useWhisperAPI;

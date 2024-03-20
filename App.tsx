@@ -1,20 +1,20 @@
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import HomeScreen from './src/screens/HomeScreen';
+import { StatusBar } from "expo-status-bar";
+import React from "react";
+import { SafeAreaView, StyleSheet } from "react-native";
+import HomeScreen from "./src/screens/HomeScreen";
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <StatusBar style="auto" />
-      <HomeScreen />
-    </View>
-  );
+	return (
+		<SafeAreaView style={styles.container}>
+			<StatusBar style="auto" />
+			<HomeScreen />
+		</SafeAreaView>
+	);
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
+	container: {
+		flex: 1,
+		backgroundColor: "#fff",
+	},
 });
