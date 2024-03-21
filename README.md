@@ -1,8 +1,6 @@
 # Bepaw AI
 
-Bepaw AI is an open-source React Native application designed as a cost-effective alternative to the OpenAI chat app. While it currently doesn't support features like web search and image generation, these are planned for future implementation. The app aims to provide the fastest and most satisfying user experience, with a focus on simplicity and ease of use.
-
-Bepaw AI will provide a video section where users can learn about how to efficiently query Language Models (LLMs) and how to use LLMs effectively as a software engineer. These resources aim to help users get the most out of the app and understand the underlying technology. The learning resources provided when running the app are not covered under the open-source license.
+Bepaw AI is an open-source React Native application designed as a cost-effective alternative to the OpenAI chat app. The app aims to provide the fastest and most satisfying user experience, with a focus on simplicity and ease of use.
 
 The application uses the Whisper API to transcribe voice to text. The application allows users to record their voice, transcribes the voice to text using the Whisper API, and displays the transcriptions in a chat-like interface. The transcriptions are persisted using AsyncStorage, so they remain available even after the app is closed and reopened.
 
@@ -24,9 +22,9 @@ Bepaw AI is designed to be as simple and straightforward as possible, using popu
 
 ## AI-Assisted Development
 
-The initial prototype of Bepaw AI was built in just two hours using the Claude 3 LLM, with an initial investment of only 15 dollars. The AI was able to generate 99% of the code, with minimal guidance and debugging from a senior software engineer.
+The initial prototype of Bepaw AI was built in just 2 hours using the Claude 3 LLM, with an initial investment of only 10 dollars. The AI was able to generate 99% of the code, with minimal guidance and debugging from a senior software engineer.
 
-Due to pricing concerns, the project later switched to using GitHub Copilot. GitHub Copilot was instrumental in resolving a Jotai storage issue that was encountered during the development process. While both Claude 3 and GitHub Copilot have their strengths, a definitive preference has not been established yet.
+Due to pricing concerns (5 dollars per hour), the project later switched to using GitHub Copilot. Claude 3 was blocked on a Jotai storage issue and consumed the rest of the credits. Switching to Copilot unblocked the situation but required a more active software engineering intervention - which would have happened with Claude 3 anyway. A preference has not been established yet between both Claude 3 and Copilot.
 
 The goal of this project is to explore the capabilities of AI-assisted coding, and the results have been very promising.
 
@@ -39,3 +37,17 @@ git clone https://github.com/yourusername/bepaw-ai.git
 cd bepaw-ai
 npm install
 npm start
+```
+
+This will start the Expo dev server, and you can open the application in the Expo app on your phone or in an Android or iOS emulator.
+
+## Planned and Not Going to Happen Features
+
+While Bepaw AI is a functional application, there are always more features that could be added. Some of these are more (un)likely to happen than others. Here are a few that are currently on the drawing board:
+
+- Web search and image generation: These features are planned for future implementation, but they're not here yet. Stay tuned!
+- Video section for learning about LLMs: This is a great idea, but it's still in the planning stages. We're looking forward to making it happen!
+
+## License
+
+Bepaw AI is licensed under the MIT License. See the LICENSE file for more details.
