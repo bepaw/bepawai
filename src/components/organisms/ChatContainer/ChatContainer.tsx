@@ -5,12 +5,12 @@ import { chatMessagesAtom } from "../../../store/chatStore";
 import ChatMessage from "../../molecules/ChatMessage";
 
 const ChatContainer: React.FC = () => {
-	const [chatMessages] = useAtom(chatMessagesAtom);
+	const [messages] = useAtom(chatMessagesAtom);
 
 	return (
 		<View style={styles.container}>
 			<ScrollView contentContainerStyle={styles.scrollContainer}>
-				{chatMessages.map((message, index) => (
+				{messages.map((message) => (
 					<ChatMessage key={message.id} text={message.text} />
 				))}
 			</ScrollView>

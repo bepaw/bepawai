@@ -7,10 +7,9 @@ import useWhisperAPI from "../hooks/useWhisperAPI";
 import { useChatMessages } from "../store/chatStore";
 
 const HomeScreen: React.FC = () => {
-	const { chatMessages, addChatMessage } = useChatMessages();
+	const { addChatMessage } = useChatMessages();
 
-	const { startRecording, stopRecording, transcript, isFetching } =
-		useWhisperAPI();
+	const { startRecording, stopRecording, isFetching } = useWhisperAPI();
 
 	const handleRecordPress = async () => {
 		if (isFetching) {
